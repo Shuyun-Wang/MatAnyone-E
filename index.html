@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="MatAnyone-E: Sparse Memory Propagation for Efficient High-Resolution Video Matting">
+<style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>MatAnyone-E</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sarpanch:wght@700;800&family=Noto+Sans:wght@400;500;600;700&family=Noto+Sans+Mono:wght@400;500&display=swap">
+<style>
+:root{--page:#FFFFFF;--card:#FFFFFF;--well:#F3F6F4;--ink:#131715;--muted:#58625C;--faint:#89928D;--rule:#E2E8E4;--pill:#161917;--pill-ink:#FFFFFF;--pill-off:#ECEFED;--pill-off-ink:#6B736F;
+--ours:#16874A;--ours-soft:#E3F3E9;--g1:#A6D6B7;--g2:#4FA873;--g3:#0F6E3B;--c-ma2:#6272C4;--c-e:#2FA36B;--c-ec:#0E6E47;--ma2:#5470B0;--grad-a:#0B0D0C;--grad-b:#16874A;--stage:#0E1110;--shadow:0 1px 2px rgba(16,24,20,.06),0 8px 24px rgba(16,24,20,.08);
+--sans:"Noto Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"Noto Sans Mono",ui-monospace,Menlo,Consolas,monospace;--title:"Sarpanch","Noto Sans",ui-sans-serif,system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--page:#0E1110;--card:#161A18;--well:#1C211F;--ink:#E6ECE8;--muted:#A2ACA6;--faint:#7B8680;--rule:#27302B;--pill:#E6ECE8;--pill-ink:#0E1110;--pill-off:#232926;--pill-off-ink:#8E9893;--ours:#2FA864;--ours-soft:#17301F;--g1:#2E5C41;--g2:#2FA864;--g3:#9BE3B6;--c-ma2:#7282D2;--c-e:#1B7048;--c-ec:#3DA470;--ma2:#6B86D6;--grad-a:#F1F5F2;--grad-b:#2FA864;--stage:#070908;--shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px rgba(0,0,0,.45)}}
+:root[data-theme="dark"]{color-scheme:dark;--page:#0E1110;--card:#161A18;--well:#1C211F;--ink:#E6ECE8;--muted:#A2ACA6;--faint:#7B8680;--rule:#27302B;--pill:#E6ECE8;--pill-ink:#0E1110;--pill-off:#232926;--pill-off-ink:#8E9893;--ours:#2FA864;--ours-soft:#17301F;--g1:#2E5C41;--g2:#2FA864;--g3:#9BE3B6;--c-ma2:#7282D2;--c-e:#1B7048;--c-ec:#3DA470;--ma2:#6B86D6;--grad-a:#F1F5F2;--grad-b:#2FA864;--stage:#070908;--shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px rgba(0,0,0,.45)}
+*{box-sizing:border-box}
+body{background:var(--page);color:var(--ink);font:16px/1.6 var(--sans)}
+a{color:var(--ours)}
+.wrap{max-width:1100px;margin:0 auto;padding-inline:clamp(16px,4vw,32px)}
+header{text-align:center;padding-block:40px 4px}
+h1{font:800 clamp(36px,8vw,74px)/1 var(--title);letter-spacing:.01em;margin:0;white-space:nowrap;display:inline-flex;align-items:center;gap:.08em}
+h1 .t{background:linear-gradient(95deg,var(--grad-a) 25%,var(--grad-b) 80%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h1 .bolt{width:.62em;height:.62em;fill:var(--ours);flex:none;transform:translateY(-.04em) rotate(8deg);filter:drop-shadow(0 .03em .05em rgba(22,135,74,.35))}
+.subtitle{font:600 clamp(18px,2.3vw,26px)/1.32 var(--sans);margin:16px auto 0;text-wrap:balance}
+@media (min-width:900px){.subtitle{white-space:nowrap}}
+.authors{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 12px;margin:18px auto 0;color:var(--ink);font-size:17px;font-weight:500}
+.authors sup{margin-left:1px}
+.authors a{color:var(--ours);text-decoration:none}
+.authors a:hover{text-decoration:underline;text-underline-offset:3px}
+.affil{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 20px;margin:10px 0 0;font-size:15px;color:var(--muted)}
+.affil a{color:inherit;text-decoration:none}.affil a:hover{color:var(--ours)}
+.affil sup,.authors sup{color:var(--ours);font-weight:600}
+.marks{margin:6px 0 0;font-size:13px;color:var(--faint)}
+.links{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:24px}
+.links a,.links span{display:inline-flex;align-items:center;gap:7px;font:600 15px/1 var(--sans);border-radius:999px;padding:11px 20px;text-decoration:none}
+.links a{background:var(--pill);color:var(--pill-ink);transition:background .15s}
+.links a:hover{background:var(--ours);color:#fff}
+.links span{background:var(--pill-off);color:var(--pill-off-ink)}
+.links small{font-weight:500;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;opacity:.85}
+.teaser{margin-top:44px}
+.teaser video{display:block;width:100%;height:auto;border-radius:16px;box-shadow:var(--shadow);background:var(--well)}
+.tagline{font-size:clamp(17px,2vw,20px);line-height:1.55;text-align:center;max-width:58ch;margin:24px auto 0;text-wrap:balance;color:var(--muted)}
+.tagline b{color:var(--ink);font-weight:700}
+.tagline b.g{color:var(--ours)}
+section{padding-block:72px 0}
+h2{font:700 clamp(26px,3.2vw,33px)/1.2 var(--sans);text-align:center;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2::after{content:"";display:block;width:44px;height:4px;border-radius:2px;background:var(--ours);margin:14px auto 0}
+.inhint{margin:0;font-style:italic;color:var(--faint);text-align:center;font-size:15px}
+.hint{font-style:italic;color:var(--faint);text-align:center;margin:14px 0 22px;font-size:15px}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:18px;padding:clamp(14px,2.6vw,26px);box-shadow:var(--shadow)}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:999px;overflow:hidden;background:var(--card);flex-wrap:wrap}
+.seg button{font:600 13.5px var(--sans);padding:8px 15px;border:0;background:transparent;color:var(--muted);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--pill);color:var(--pill-ink)}
+button:focus-visible{outline:2px solid var(--ours);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
+.meta{font:12.5px var(--mono);color:var(--faint);font-variant-numeric:tabular-nums}
+/* top bar (as on the MatAnyone / MatAnyone 2 pages) */
+.topnav{display:flex;justify-content:center;align-items:center;gap:6px;padding:8px 16px;background:var(--page)}
+.navicon{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:8px;color:var(--ink)}
+.navicon svg{width:17px;height:17px}
+.navicon:hover,.ddbtn:hover,.dd.open .ddbtn{background:var(--well);color:var(--ours)}
+.dd{position:relative}
+.ddbtn{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 12px;border:0;border-radius:8px;background:none;color:var(--ink);font:500 15px var(--sans);cursor:pointer}
+.ddbtn svg{width:15px;height:15px;color:var(--ours)}
+.ddmenu{position:absolute;top:100%;left:50%;transform:translateX(-50%);min-width:190px;padding:6px;background:var(--card);border:1px solid var(--rule);border-radius:12px;box-shadow:var(--shadow);z-index:20;display:none}
+.ddmenu::before{content:"";position:absolute;left:0;right:0;top:-8px;height:8px}
+.dd:hover .ddmenu,.dd:focus-within .ddmenu,.dd.open .ddmenu{display:block}
+.ddmenu a{display:block;padding:9px 12px;border-radius:8px;color:var(--ink);text-decoration:none;font-size:15px}
+.ddmenu a:hover{background:var(--well);color:var(--ours)}
+.ddmenu a[aria-current="page"]{color:var(--ours);font-weight:600}
+/* abstract and method */
+.prose{max-width:860px;margin:22px auto 0;font-size:16.5px;line-height:1.7;text-align:justify;hyphens:auto;color:var(--ink)}
+.prose p{margin:0}
+.prose b{font-weight:700}
+.nm{font:700 1.06em var(--title);color:var(--ours);letter-spacing:.01em}
+.figframe{margin:26px auto 0;background:#fff;border:1px solid var(--rule);border-radius:16px;padding:clamp(8px,2vw,18px);box-shadow:var(--shadow)}
+.figframe img{display:block;width:100%;height:auto}
+/* results */
+.stagebox{display:flex;justify-content:center;background:var(--stage);border-radius:12px;overflow:hidden}
+.stage{position:relative;line-height:0;touch-action:none;user-select:none;max-width:100%}
+.stage canvas{display:block;max-height:66vh;width:auto;max-width:100%;height:auto}
+.stage.cmp{cursor:ew-resize}
+video.src{position:absolute;width:2px;height:2px;opacity:0;pointer-events:none}
+.cmpline{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.35);pointer-events:none}
+.cmpline .knob{position:absolute;top:50%;left:50%;width:32px;height:32px;margin:-16px 0 0 -16px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.cmpline .knob::before,.cmpline .knob::after{content:"";position:absolute;top:11px;border:5px solid transparent}
+.cmpline .knob::before{left:3px;border-right-color:#131715}.cmpline .knob::after{right:3px;border-left-color:#131715}
+.tag{position:absolute;top:10px;font:500 12px/1 var(--sans);color:#fff;background:rgba(0,0,0,.55);padding:6px 9px;border-radius:6px;pointer-events:none}
+.tag.l{left:10px}.tag.r{right:10px}
+#results .row{margin-top:14px}
+.rside{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px 14px;margin-left:auto}
+.native{display:inline-flex;align-items:center;gap:9px;padding:11px 20px 11px 16px;border-radius:999px;background:var(--ours);color:#fff;font:700 15px var(--sans);text-decoration:none;white-space:nowrap;box-shadow:0 0 0 4px var(--ours-soft),0 6px 18px rgba(22,135,74,.35);transition:transform .15s,box-shadow .15s}
+.native:hover{transform:translateY(-1px);box-shadow:0 0 0 5px var(--ours-soft),0 10px 24px rgba(22,135,74,.45)}
+.native svg{width:18px;height:18px;padding:3px;border-radius:50%;background:rgba(255,255,255,.22);box-sizing:content-box}
+.pills{display:flex;justify-content:center;gap:clamp(10px,3vw,34px);flex-wrap:wrap;margin-top:22px;padding-top:20px;border-top:1px solid var(--rule)}
+.pill{display:flex;flex-direction:column;align-items:center;gap:9px;padding:0;border:0;background:none;cursor:pointer;color:var(--ink);width:112px}
+.pill img{width:64px;height:64px;border-radius:50%;object-fit:cover;display:block;transition:transform .18s ease,box-shadow .18s ease;box-shadow:0 0 0 2px var(--card),0 0 0 3px var(--rule)}
+.pill:hover img{transform:scale(1.08)}
+.pill span{font:600 13px/1.25 var(--sans);text-align:center}
+.pill small{display:block;font:11.5px var(--mono);color:var(--faint);font-weight:400}
+.pill[aria-current="true"] small{color:var(--ours);font-weight:600}
+.pill[aria-current="true"] img{transform:scale(1.2);box-shadow:0 0 0 2px var(--card),0 0 0 4px var(--ours)}
+.pill[aria-current="true"] span{color:var(--ours)}
+/* gate widget */
+.gw{display:grid;gap:16px}
+.nums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.nums div{background:var(--well);border-radius:12px;padding:14px 16px}
+.nums b{display:block;font:700 28px/1.1 var(--sans);color:var(--ours);font-variant-numeric:tabular-nums}
+.nums span{display:block;font-size:13.5px;color:var(--muted);margin-top:4px;line-height:1.4}
+.vis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;grid-auto-flow:row dense}
+.qbox{position:relative;border-radius:12px;overflow:hidden;line-height:0;cursor:crosshair;background:var(--well);grid-column:1/3;grid-row:1/3;align-self:start;box-shadow:0 0 0 2px var(--ours)}
+.qbox canvas{display:block;width:100%;height:auto}
+.qtag{position:absolute;left:10px;top:10px;font:500 12px/1 var(--sans);color:#fff;background:rgba(0,0,0,.55);padding:6px 9px;border-radius:6px;pointer-events:none}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--muted);align-items:center}
+.ctrls{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center}
+.grp{display:flex;align-items:center;gap:9px}
+.lbl{font:600 11.5px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.qlegend{position:absolute;left:10px;bottom:10px;display:flex;flex-wrap:wrap;gap:6px 14px;font:500 12px/1 var(--sans);color:#fff;background:rgba(0,0,0,.58);padding:7px 10px;border-radius:7px;pointer-events:none}
+.legend i,.qlegend i{display:inline-block;vertical-align:-2px;margin-right:6px}
+.legend .sq,.qlegend .sq{width:13px;height:13px;border-radius:3px;background:var(--ours);opacity:.75}
+.legend .dt,.qlegend .dt{width:9px;height:9px;border-radius:50%;background:#fff;box-shadow:0 0 0 1.5px var(--faint)}
+.legend .rg,.qlegend .rg{width:13px;height:13px;border-radius:50%;box-shadow:inset 0 0 0 2.5px var(--ink)}
+.legend .rp{width:110px;height:9px;border-radius:5px}
+.qlegend .rg{box-shadow:inset 0 0 0 2.5px #fff}
+.qlegend .dt{box-shadow:none}
+.qlegend .sq{opacity:.9}
+.mem{position:relative;line-height:0;min-width:0}
+.mem canvas{display:block;width:100%;height:auto;border-radius:10px;background:var(--well)}
+.mem span{position:absolute;left:8px;bottom:8px;font:500 11.5px/1 var(--sans);color:#fff;background:rgba(0,0,0,.58);padding:5px 7px;border-radius:5px;white-space:nowrap;max-width:calc(100% - 16px);overflow:hidden;text-overflow:ellipsis}
+.readout{font:14.5px/1.55 var(--sans);color:var(--muted);min-height:3.1em;padding:12px 14px;background:var(--well);border-radius:10px}
+.readout b{color:var(--ink);font-weight:600}
+.readout .g{color:var(--ours);font-weight:700}
+/* numbers */
+.charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.chart{margin:0;background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:14px 14px 8px}
+.chart figcaption{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 14px;align-items:center;font-size:14.5px;margin-bottom:4px}
+.clegend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;color:var(--muted)}
+.clegend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart text{font:11.5px var(--mono);fill:var(--muted)}
+.chart .v{font:600 11.5px var(--mono);fill:var(--ink)}
+.chart .cat{font:600 12.5px var(--sans);fill:var(--ink)}
+th.grpth{text-align:center;color:var(--ink)}
+.acc td.best{font-weight:700;color:var(--ink)}
+.acc tr.me td{background:var(--ours-soft)}
+.acc tr.me td:first-child{font-weight:700;color:var(--ours);border-radius:8px 0 0 8px}
+.acc tr.me td:last-child{border-radius:0 8px 8px 0}
+.gpucol{display:grid;gap:14px;min-width:0}
+.headline{margin-bottom:18px}
+.headline b{font-size:32px}
+.note{margin:10px 2px 0;font-size:13px;color:var(--faint)}
+.chart .ref{font:600 11px var(--sans);fill:var(--c-ec)}
+.chart .up{font:600 11.5px var(--sans);fill:var(--ours)}
+.tables{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:24px}
+.tbox{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--rule);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{font:600 12px var(--sans);color:var(--faint);letter-spacing:.03em}
+td{font-variant-numeric:tabular-nums}
+td.o{color:var(--ours);font-weight:700}
+caption{caption-side:top;text-align:left;font:600 15px var(--sans);padding-bottom:8px;color:var(--ink)}
+.foot{font-size:13px;color:var(--faint);margin:14px 0 0}
+pre{background:var(--well);border-radius:12px;padding:16px;font:13px/1.55 var(--mono);color:var(--muted);overflow-x:auto;margin:22px 0 0}
+footer{padding-block:56px 56px;color:var(--faint);font-size:13px;text-align:center}
+@media (max-width:760px){.charts{grid-template-columns:minmax(0,1fr)}.qlegend{position:static;border-radius:0;background:var(--well);color:var(--muted);line-height:1.2;padding:8px 10px}.qlegend .rg{box-shadow:inset 0 0 0 2.5px var(--ink)}.qlegend .dt{box-shadow:0 0 0 1.5px var(--faint)}.tables{grid-template-columns:1fr}.vis{grid-template-columns:repeat(2,minmax(0,1fr))}.qbox{grid-column:1/3;grid-row:auto}.mem:last-child{grid-column:1/3;justify-self:center;width:calc(50% - 5px)}.nums{grid-template-columns:1fr}.nums b{font-size:24px}}
+</style>
+</head>
+<body>
+<nav class="topnav" aria-label="Main">
+ <a class="navicon" href="#" aria-label="Home"><svg viewBox="0 0 576 512" aria-hidden="true"><path fill="currentColor" d="M280.37 148.26L96 300.11V464a16 16 0 0 0 16 16l112.06-.29a16 16 0 0 0 15.92-16V368a16 16 0 0 1 16-16h64a16 16 0 0 1 16 16v95.64a16 16 0 0 0 16 16.05L464 480a16 16 0 0 0 16-16V300L295.67 148.26a12.19 12.19 0 0 0-15.3 0zM571.6 251.47L488 182.56V44.05a12 12 0 0 0-12-12h-56a12 12 0 0 0-12 12v72.61L318.47 43a48 48 0 0 0-61 0L4.34 251.47a12 12 0 0 0-1.6 16.9l25.5 31A12 12 0 0 0 45.15 301l235.22-193.74a12.19 12.19 0 0 1 15.3 0L530.9 301a12 12 0 0 0 16.9-1.6l25.5-31a12 12 0 0 0-1.7-16.93z"/></svg></a>
+ <div class="dd" id="dd"><button type="button" class="ddbtn" aria-expanded="false" aria-haspopup="true">More Research<svg viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M5.3 7.3a1 1 0 0 1 1.4 0L10 10.6l3.3-3.3a1 1 0 1 1 1.4 1.4l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 0 1 0-1.4z"/></svg></button>
+  <div class="ddmenu" role="menu"><a role="menuitem" href="#" aria-current="page">MatAnyone-E</a><a role="menuitem" href="https://pq-yang.github.io/projects/MatAnyone2/">MatAnyone 2</a><a role="menuitem" href="https://pq-yang.github.io/projects/MatAnyone/">MatAnyone</a></div></div>
+</nav>
+<header class="wrap">
+ <h1><span class="t">MatAnyone-E</span><svg class="bolt" viewBox="0 0 24 24" role="img" aria-label="accelerated"><path d="M13.2 1.8 4.6 13.3c-.4.5 0 1.2.6 1.2h5.3l-1.4 7.4c-.1.7.8 1.1 1.2.5l8.6-11.5c.4-.5 0-1.2-.6-1.2H13l1.4-7.4c.1-.7-.8-1.1-1.2-.5Z"/></svg></h1>
+ <p class="subtitle">Sparse Memory Propagation for Efficient High‑Resolution Video Matting</p>
+ <p class="authors"><span><a href="#" class="au">Shuyun Wang</a><sup>1,2</sup>,</span><span><a href="#" class="au">Shangchen Zhou</a><sup>2†</sup>,</span><span><a href="#" class="au">Peiqing Yang</a><sup>2</sup>,</span><span><a href="#" class="au">Yuekun Dai</a><sup>2</sup>,</span><span><a href="#" class="au">Xin Yu</a><sup>3*</sup>,</span><span><a href="#" class="au">Chen Change Loy</a><sup>2*</sup></span></p>
+ <p class="affil"><a href="https://uq.edu.au"><sup>1</sup>The University of Queensland</a><a href="https://www.ntu.edu.sg"><sup>2</sup>Nanyang Technological University</a><a href="https://www.adelaide.edu.au"><sup>3</sup>University of Adelaide</a></p>
+ <p class="marks">† Project lead &nbsp;·&nbsp; * Co-corresponding authors</p>
+ <div class="links"><span>Paper <small>soon</small></span><span>Code <small>soon</small></span><a href="#bibtex">BibTeX</a></div>
+</header>
+
+<main class="wrap">
+ <div class="teaser"><video src="v/speed_race.mp4" poster="t/speed_race_poster.jpg" autoplay muted loop playsinline preload="auto" aria-label="Speed race at 3840 by 2160 on one H200, both with torch.compile: MatAnyone 2 at 2.3 FPS, MatAnyone-E at 28.6 FPS"></video></div>
+ <p class="tagline"><b>MatAnyone-E</b> mattes <b>native 4K</b> video at <b class="g">28.6&nbsp;FPS</b> on a single H200. That is <b>12×</b> faster than MatAnyone&nbsp;2, and it needs only <b>3.1&nbsp;GB</b> of GPU memory.</p>
+
+ <section id="abstract">
+  <h2>Abstract</h2>
+  <div class="prose"><p>High-resolution video matting requires preserving fine details, such as hair strands and soft transparency, while maintaining consistency across frames. Memory-based methods achieve strong matting quality by matching current-frame features with information stored from earlier frames, but this process becomes increasingly costly as resolution grows. We present <span class="nm">MatAnyone-E</span>, an efficient extension of MatAnyone 2 that focuses computation where it is most needed. Our approach first performs <b>low-resolution propagation</b> to identify uncertain regions that require closer inspection and the memory candidates most relevant to them. It then performs <b>high-resolution matching only for these regions</b> using the selected memory, while reusing low-resolution matching results elsewhere. This strategy reduces both the number of locations requiring detailed matching and the amount of memory searched, while preserving the information needed to produce a complete matte. We further reduce the cost of generating high-resolution mattes with a <b>lightweight decoder</b> designed around measured runtime bottlenecks and trained to reproduce the original decoder's representations. Experiments show that <span class="nm">MatAnyone-E</span> maintains matting quality comparable to MatAnyone 2 while achieving an estimated <b>7.4× inference speedup</b> and reducing peak GPU memory usage to <b>7.6%</b> of MatAnyone 2 at 4K. With compilation-enabled inference on a single NVIDIA H200 GPU, it reaches <b>73.07 FPS at 1080p</b> and <b>28.62 FPS at 4K</b>.</p></div>
+ </section>
+
+ <section id="method">
+  <h2>Method</h2>
+  <figure class="figframe"><img src="fig/method.png" alt="MatAnyone-E overview: encoder, Sparse Memory Propagation (low-resolution propagation, query pruning, memory pruning, high-resolution propagation), object transformer and lightweight decoder" loading="lazy" width="2400" height="1146"></figure>
+  <div class="prose"><p><span class="nm">MatAnyone-E</span> keeps the architecture of MatAnyone 2 and replaces the two parts whose cost grows fastest with resolution. <b>Sparse Memory Propagation</b> first runs a cheap low-resolution pass. Its uncertainty selects the query locations that need detailed matching (<b>query pruning</b>), and its affinities select the memory most relevant to them (<b>memory pruning</b>). High-resolution matching then runs only on these query–memory pairs, and the upsampled low-resolution readout is reused everywhere else. A <b>lightweight decoder</b>, designed from stage-wise latency profiling and trained with feature distillation from the original decoder, further cuts the cost of decoding high-resolution mattes.</p></div>
+ </section>
+
+ <section id="results">
+  <h2>Results at native resolution</h2>
+  <div style="height:26px"></div>
+  <div class="card">
+   <div class="stagebox"><div class="stage" id="g"><video class="src" muted playsinline loop preload="auto"></video><canvas></canvas><div class="cmpline"><span class="knob"></span></div><span class="tag l"></span><span class="tag r"></span></div></div>
+   <div class="row"><div class="seg" id="vs"><button type="button" data-m="cmp" aria-pressed="true">Input | Matte</button><button type="button" data-m="0">Input</button><button type="button" data-m="1">Green screen</button><button type="button" data-m="2">Alpha</button></div><div class="rside"><span class="meta" id="gm"></span><a class="native" id="native" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5.1v13.8c0 .8.9 1.3 1.6.8l10.4-6.9c.6-.4.6-1.3 0-1.7L9.6 4.3C8.9 3.8 8 4.3 8 5.1Z"/></svg><span id="nativetxt">View native 4K</span></a></div></div>
+   <div class="pills" id="pills"></div>
+  </div>
+ </section>
+
+ <section id="gate">
+  <h2>Where the computation goes</h2>
+  <div style="height:26px"></div>
+  <div class="card gw">
+   <p class="inhint">Click anywhere on the frame to see where that query reads from memory.</p>
+   <div class="row toolbar"><div class="ctrls">
+     <div class="grp"><span class="lbl">Gate</span><div class="seg" id="gseg"><button type="button" data-g="1" aria-pressed="true">On</button><button type="button" data-g="0">Off</button></div></div>
+     <div class="grp"><span class="lbl">Memory</span><div class="seg" id="pseg"><button type="button" data-p="0">All</button><button type="button" data-p="1" aria-pressed="true">After pruning · 15%</button></div></div></div>
+    <div class="legend"><span>attention (log) 10<sup>−4</sup> <i class="rp" id="rampbar" style="margin:0 6px"></i> 10<sup>−1</sup></span></div></div>
+   <div class="vis" id="vis"><div class="qbox" id="qbox"><canvas id="qc" width="1280" height="720"></canvas><span class="qtag" id="qtag">Query frame</span>
+     <span class="qlegend"><span><i class="sq"></i>gated · refined at full res</span><span><i class="dt"></i>other query</span><span><i class="rg"></i>selected</span></span></div></div>
+   <div class="nums" id="nums"></div>
+  </div>
+ </section>
+
+ <section>
+  <h2>Efficiency &amp; Accuracy</h2>
+  <div class="card" style="margin-top:30px">
+   <div class="nums headline"><div><b>7.4×</b><span>faster than MatAnyone 2 at 4K</span></div><div><b>13.1×</b><span>less peak GPU memory than MatAnyone 2 at 4K</span></div><div><b>28.6 FPS</b><span>native 4K on one H200 (C.)</span></div></div>
+   <div class="charts">
+    <figure class="chart"><figcaption><b>The advantage over MatAnyone 2 grows with resolution</b><span class="clegend"><span><i style="background:var(--c-ec)"></i>Speed-up</span><span><i style="background:var(--c-e)"></i>Memory saving</span></span></figcaption>
+     <svg id="c1" viewBox="0 0 560 470" role="img" aria-label="Speed-up and peak-memory saving of MatAnyone-E over MatAnyone 2 on A800, by input resolution"></svg></figure>
+    <div class="gpucol">
+     <figure class="chart"><figcaption><b>RTX 3090 · MatAnyone-E (C.) frames per second</b></figcaption>
+      <svg id="c3090" viewBox="0 0 560 200" role="img" aria-label="Compiled MatAnyone-E frames per second on RTX 3090 by input resolution"></svg></figure>
+     <figure class="chart"><figcaption><b>H200 NVL · MatAnyone-E (C.) frames per second</b></figcaption>
+      <svg id="ch200" viewBox="0 0 560 200" role="img" aria-label="Compiled MatAnyone-E frames per second on H200 NVL by input resolution"></svg></figure>
+    </div>
+   </div>
+   <p class="note">(C.): with torch.compile.</p>
+   <div class="tbox acc" style="margin-top:18px"><table><caption>Accuracy, MAD (×10³) ↓</caption>
+     <thead><tr><th>Method</th><th>VideoMatte HR</th><th>YouTubeMatte HR</th><th>CRGNN</th></tr></thead>
+     <tbody><tr><td>VideoMaMa</td><td>6.83</td><td>2.46</td><td>5.18</td></tr><tr><td>SAM2Matting</td><td>4.74</td><td>3.16</td><td>5.80</td></tr><tr><td>MatAnyone 2</td><td class="best">4.10</td><td class="best">1.61</td><td class="best">4.24</td></tr><tr class="me"><td>MatAnyone-E</td><td class="o">4.14</td><td class="o">1.62</td><td class="o">4.28</td></tr></tbody></table></div>
+
+  </div>
+ </section>
+
+ <section id="bibtex">
+  <h2>BibTeX</h2>
+  <pre>Coming soon.</pre>
+ </section>
+</main>
+<footer class="wrap">Demonstration footage: stock video, including Pexels clips by Gustavo Fring, Kampus Production and Pavel Danilyuk, and the CRGNN dataset. Rights remain with their creators.</footer>
+
+<script src="gate/data.js"></script>
+<script>
+const CLIPS=[
+ {id:'14629559_2560_1440_30fps',title:'Long hair',w:2560,h:1440,fps:29.97,frames:370,credit:'Stock footage',native:''},
+ {id:'pexels_8956469',title:'Curly hair',w:3840,h:2160,fps:25,frames:425,credit:'Kampus Production / Pexels',native:''},
+ {id:'pexels_7424166_from300',title:'Dance',w:2160,h:3840,fps:29.97,frames:514,credit:'Gustavo Fring / Pexels',native:''},
+ {id:'323001_from100',title:'AI-generated',w:3744,h:2160,fps:60,frames:332,credit:'Stock footage',native:''},
+ {id:'pexels_4065468',title:'Moving camera',w:3840,h:2160,fps:29.97,frames:425,credit:'Pavel Danilyuk / Pexels',native:''}];
+const $=s=>document.querySelector(s);
+const VN=['Input','Green screen','Alpha'];
+
+/* ---------- stacked-video player: one mp4 holds input / green / alpha bands, the canvas crops them ---------- */
+function player(root, st, onFrame){
+  const v=root.querySelector('video'), cv=root.querySelector('canvas'), cx=cv.getContext('2d'), line=root.querySelector('.cmpline');
+  function draw(){ const W=v.videoWidth, H3=v.videoHeight; if(!W||!H3) return; const H=Math.round(H3/3);
+    if(cv.width!==W||cv.height!==H){ cv.width=W; cv.height=H; }
+    if(st.m==='cmp'){ const x=Math.round(st.split*W); if(x>0) cx.drawImage(v,0,st.l*H,x,H,0,0,x,H); if(x<W) cx.drawImage(v,x,st.r*H,W-x,H,x,0,W-x,H); line.style.left=(st.split*100)+'%'; line.hidden=false; }
+    else { cx.drawImage(v,0,(+st.m)*H,W,H,0,0,W,H); line.hidden=true; }
+    onFrame&&onFrame(v); }
+  if('requestVideoFrameCallback' in HTMLVideoElement.prototype){ const L=()=>{ draw(); v.requestVideoFrameCallback(L); }; v.requestVideoFrameCallback(L); } else { (function L(){ draw(); requestAnimationFrame(L); })(); }
+  ['loadeddata','seeked'].forEach(e=>v.addEventListener(e,draw));
+  const sp=e=>{ const r=cv.getBoundingClientRect(); st.split=Math.min(1,Math.max(0,(e.clientX-r.left)/r.width)); draw(); };
+  root.addEventListener('pointerdown',e=>{ if(st.m!=='cmp'){ v.paused?v.play().catch(()=>{}):v.pause(); return; } sp(e); root.setPointerCapture(e.pointerId); });
+  root.addEventListener('pointermove',e=>{ if(st.m==='cmp'&&e.buttons) sp(e); });
+  return {v,draw};
+}
+const gs={m:'cmp',l:0,r:1,split:0.5}; let cur=CLIPS[0];
+const G=player($('#g'),gs,v=>{ const t=v.currentTime||0; $('#gm').textContent=`${cur.w}×${cur.h} · ${cur.fps>=50?60:cur.fps} fps`; });
+$('#pills').innerHTML=CLIPS.map((c,i)=>`<button type="button" class="pill" data-i="${i}" aria-current="${i===0}" aria-label="${c.title}, ${c.w} by ${c.h}"><img alt="" src="t/${c.id}_sq.jpg"><span><small>${c.w}×${c.h}</small></span></button>`).join('');
+function labels(){ const c=gs.m==='cmp'; $('#g .tag.l').textContent=c?'Input':VN[+gs.m]; $('#g .tag.r').textContent='Green screen'; $('#g .tag.r').hidden=!c;
+  $('#vs').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===gs.m)); $('#g').classList.toggle('cmp',c); G.draw(); }
+function load(i){ cur=CLIPS[i]; G.v.src=`v/${cur.id}.mp4`;
+  $('#native').href=cur.native||'#'; $('#nativetxt').textContent=`Watch in native ${cur.w}×${cur.h}`; G.v.play().catch(()=>{}); document.querySelectorAll('.pill').forEach(b=>b.setAttribute('aria-current',+b.dataset.i===i)); }
+$('#pills').addEventListener('click',e=>{ const b=e.target.closest('.pill'); if(b) load(+b.dataset.i); });
+$('#vs').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; gs.m=b.dataset.m; labels(); });
+labels(); load(0);
+
+/* ---------- gate widget ---------- */
+// sequential ramp for attention (magma-like stops) on the paper figure's log10 range; alpha grows with value
+const STOPS=[[0,[60,20,110]],[.3,[150,40,150]],[.6,[240,85,95]],[.82,[255,165,80]],[1,[255,245,170]]];
+function ramp(v){ for(let i=1;i<STOPS.length;i++){ if(v<=STOPS[i][0]){ const [a,ca]=STOPS[i-1],[b,cb]=STOPS[i],u=(v-a)/(b-a); return ca.map((x,k)=>Math.round(x+(cb[k]-x)*u)); } } return STOPS[STOPS.length-1][1]; }
+$('#rampbar').style.background=`linear-gradient(90deg,${STOPS.map(([p,c])=>`rgb(${c}) ${p*100}%`).join(',')})`;
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const hex=h=>{ h=h.replace('#',''); return [0,2,4].map(i=>parseInt(h.slice(i,i+2),16)); };
+const GW={showGate:true,prune:true,sel:-1};
+let D=null, ATT=null, qimg=null, mimgs=[], keepCv=[], lookup=null;
+function img(src){ return new Promise((ok,no)=>{ const im=new Image(); im.onload=()=>ok(im); im.onerror=no; im.src=src; }); }
+function bits(b64,n){ const s=atob(b64), out=new Uint8Array(n); for(let i=0;i<n;i++) out[i]=(s.charCodeAt(i>>3)>>(7-(i&7)))&1; return out; }
+function buildKeep(){ // pruned cells darkened, kept cells clear
+  const [Hf,Wf]=D.fine, pg=[6,8,7]; keepCv=D.keep.map(b=>{ const k=bits(b,Hf*Wf), c=document.createElement('canvas'); c.width=Wf; c.height=Hf; const x=c.getContext('2d'), id=x.createImageData(Wf,Hf);
+    for(let i=0;i<k.length;i++){ const o=i*4; id.data[o]=pg[0]; id.data[o+1]=pg[1]; id.data[o+2]=pg[2]; id.data[o+3]=k[i]?0:190; } x.putImageData(id,0,0); return c; }); }
+// grid cells in canvas pixels: the 16 px feature grid reaches slightly past the bottom edge of 1080p (68 rows = 1088 px)
+const cellW=c=>c.width*D.x_cover/D.grid[1], cellH=c=>c.height*D.y_cover/D.grid[0];
+function drawQuery(){
+  const c=$('#qc'), x=c.getContext('2d'), Wc=D.grid[1], sx=cellW(c), sy=cellH(c); x.drawImage(qimg,0,0,c.width,c.height);
+  if(GW.showGate){ const o=hex(css('--ours')); x.fillStyle=`rgba(${o},0.58)`; for(let i=0;i<D.gate.length;i++) if(D.gate[i]>D.thr*255) x.fillRect((i%Wc)*sx,Math.floor(i/Wc)*sy,sx+.5,sy+.5); }
+  for(const [r,cc,g] of D.queries) if(!g){ x.beginPath(); x.arc((cc+.5)*sx,(r+.5)*sy,2.2,0,7); x.fillStyle='rgba(255,255,255,.5)'; x.fill(); }
+  if(GW.sel>=0){ const [r,cc]=D.queries[GW.sel], X=(cc+.5)*sx, Y=(r+.5)*sy; x.lineWidth=6; x.strokeStyle='rgba(0,0,0,.55)'; x.beginPath(); x.arc(X,Y,17,0,7); x.stroke(); x.lineWidth=3; x.strokeStyle='#fff'; x.beginPath(); x.arc(X,Y,17,0,7); x.stroke(); }
+}
+function drawMems(){
+  const [T,ah,aw]=D.attn_grid, off=document.createElement('canvas'); off.width=aw; off.height=ah; const ox=off.getContext('2d');
+  const q=GW.sel, gated=q>=0&&D.queries[q][2], showPrune=GW.prune&&(gated||q<0);
+  D.mem.forEach((n,t)=>{ const c=document.getElementById('m'+t), x=c.getContext('2d');
+    // with a query picked, the frame goes grey and dim so the attention colours carry the view
+    if(q>=0){ x.filter='grayscale(1) brightness(0.62)'; x.drawImage(mimgs[t],0,0,c.width,c.height); x.filter='none'; if(!('filter' in x)){ x.fillStyle='rgba(8,10,9,.45)'; x.fillRect(0,0,c.width,c.height); } }
+    else x.drawImage(mimgs[t],0,0,c.width,c.height);
+    if(q>=0){ const id=ox.createImageData(aw,ah), base=(q*T+t)*ah*aw; for(let i=0;i<ah*aw;i++){ const v=ATT[base+i]/255, col=ramp(v), o=i*4; id.data[o]=col[0]; id.data[o+1]=col[1]; id.data[o+2]=col[2]; id.data[o+3]=v>0?Math.round(120+135*v):0; }
+      ox.putImageData(id,0,0); x.imageSmoothingEnabled=true; x.drawImage(off,0,0,c.width*D.x_cover,c.height*D.y_cover); }
+    if(showPrune){ x.imageSmoothingEnabled=false; x.drawImage(keepCv[t],0,0,c.width*D.x_cover,c.height*D.y_cover); }
+    document.getElementById('ml'+t).textContent=`Memory #${n}${t===0?' (first)':''}${showPrune?` · ${D.stats.kv_kept_per_frame_pct[t]}% kept`:''}`; });
+}
+function pick(e){ const c=$('#qc'), rc=c.getBoundingClientRect(), [Hc,Wc]=D.grid;
+  const fc=(e.clientX-rc.left)/rc.width*Wc/D.x_cover-.5, fr=(e.clientY-rc.top)/rc.height*Hc/D.y_cover-.5;
+  const exact=lookup.get(Math.round(fr)*Wc+Math.round(fc)); if(exact!==undefined&&D.queries[exact][2]){ GW.sel=exact; } else { let best=-1,bd=1e9; D.queries.forEach(([r,cc,g],i)=>{ const d=(r-fr)**2+(cc-fc)**2-(g?1:0); if(d<bd){bd=d;best=i;} }); GW.sel=best; }
+  drawQuery(); drawMems(); }
+(async()=>{ try{
+  const dj=window.GATE_DATA, txt=window.GATE_ATTN; if(!dj||!txt) throw new Error('gate data missing'); D=dj;
+  { const s=atob(txt.trim()); ATT=new Uint8Array(s.length); for(let i=0;i<s.length;i++) ATT[i]=s.charCodeAt(i); }
+  [qimg,...mimgs]=await Promise.all(['gate/query.jpg',...D.mem.map(n=>`gate/mem_${n}.jpg`)].map(img));
+  $('#qtag').textContent=`Query frame #${D.query_frame} · ${D.image[1]}×${D.image[0]} · CRGNN`;
+  $('#vis').insertAdjacentHTML('beforeend',D.mem.map((n,t)=>`<div class="mem"><canvas id="m${t}" width="640" height="360"></canvas><span id="ml${t}"></span></div>`).join(''));
+  lookup=new Map(D.queries.map(([r,c],i)=>[r*D.grid[1]+c,i]));
+  const S=D.stats; $('#nums').innerHTML=`<div><b>${S.gated_pct.toFixed(1)}%</b><span>of queries pass the uncertainty gate and are refined</span></div><div><b>${S.kv_kept_pct.toFixed(0)}%</b><span>of the memory is kept for the refined read</span></div><div><b>${(100*(1-S.gated_pct/100*S.kv_kept_pct/100)).toFixed(1)}%</b><span>of full-resolution attention is skipped: 1 − ${S.gated_pct.toFixed(1)}% × ${S.kv_kept_pct.toFixed(0)}%</span></div>`;
+  // default: the hair query of the paper figure (row 12, col 22), else the most uncertain gated query
+  let best=D.queries.findIndex(([r,c,g])=>r===12&&c===22&&g), bp=-1;
+  if(best<0) D.queries.forEach(([r,c,g],i)=>{ const p=D.gate[r*D.grid[1]+c]; if(g&&p>bp){bp=p;best=i;} }); GW.sel=best;
+  buildKeep(); drawQuery(); drawMems();
+  $('#qbox').addEventListener('click',pick);
+  const redraw=()=>{ buildKeep(); drawQuery(); drawMems(); };
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change',redraw);
+  new MutationObserver(redraw).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+ }catch(err){ $('#qtag').textContent='The captured attention could not be loaded.'; } })();
+$('#gseg').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b||!D) return; GW.showGate=b.dataset.g==='1'; $('#gseg').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b)); drawQuery(); });
+$('#pseg').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b||!D) return; GW.prune=b.dataset.p==='1'; $('#pseg').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b)); drawMems(); });
+
+/* ---------- speed charts: grouped bars, FPS (higher is better), value on every bar, a missing value is drawn as n/a ---------- */
+const SPEED={"cats": ["1024×1024", "1920×1080", "2560×1440", "3840×2160"], "ma2": [29.5, 13.6, 5.6, 1.1], "ma2_note": [null, null, null, "estimated; out of memory at 80 GB"], "ours": [41.3, 26.6, 16.5, 8.1], "ours_c": [47.3, 37.6, 25.1, 13.6], "speedup": ["1.40", "1.96", "2.95", "7.36"], "gpu": {"rtx": {"eager": [33.6, 19.81, 11.99, 5.69], "comp": [45.97, 29.37, 18.27, 9.0], "mem_eager": [0.87, 1.61, 2.98, 6.09], "mem_comp": [0.5, 0.87, 1.89, 3.16]}, "h200": {"eager": [71.57, 45.22, 29.22, 14.38], "comp": [102.1, 73.07, 52.89, 28.62], "mem_eager": [0.89, 1.63, 3.0, 6.12], "mem_comp": [0.52, 1.05, 1.9, 3.1]}}};
+function bars(svg, cats, series, notes, opt={}){
+  const X0=40,X1=552,Y0=opt.y0||256,Y1=26, all=series.flatMap(s=>s.vals).filter(v=>v!=null), max=Math.max(...all)*1.14;
+  const ys=v=>Y0-(Y0-Y1)*v/max, n=cats.length, gw=(X1-X0)/n, bw=Math.min(46,(gw*0.74)/series.length), gap=2;
+  const raw=max/4, b10=Math.pow(10,Math.floor(Math.log10(raw))), stp=[1,2,2.5,5,10].map(m=>m*b10).find(x=>x>=raw);
+  let h=`<defs><filter id="${svg.slice(1)}glow" x="-60%" y="-20%" width="220%" height="140%"><feGaussianBlur stdDeviation="4"/></filter></defs>`;
+  for(let t=0;t<=max;t+=stp){ const near=opt.ref!=null&&Math.abs(ys(t)-ys(opt.ref))<18;   // keep the reference label readable
+    h+=`<line x1="${X0}" x2="${X1}" y1="${ys(t)}" y2="${ys(t)}" stroke="var(--rule)"/>`+(near?'':`<text x="${X0-7}" y="${ys(t)+4}" text-anchor="end">${+t.toFixed(1)}</text>`); }
+  const fmt=opt.fmt||(v=>v.toFixed(1)), unit=opt.unit||' FPS';
+  h+=`<text x="${X0}" y="${Y1-10}">${opt.ylab||'FPS'}</text>`;
+  cats.forEach((c,i)=>{ const cx=X0+gw*(i+.5), w0=series.length*bw+(series.length-1)*gap, x0=cx-w0/2;
+    series.forEach((s,k)=>{ const v=s.vals[i], x=x0+k*(bw+gap);
+      if(v==null){ h+=`<rect x="${x+.75}" y="${Y0-22}" width="${bw-1.5}" height="21" rx="4" fill="none" stroke="var(--faint)" stroke-dasharray="3 3"/><text x="${x+bw/2}" y="${Y0-28}" text-anchor="middle">n/a</text>`; return; }
+      const y=ys(v), r=Math.min(4,(Y0-y)/2);
+      const mk=(opt.mark||[]).some(([a,b])=>a===k&&b===i);
+      if(mk){ const bx=x-14, bwid=bw+28;
+        h+=`<rect x="${bx}" y="${Y1-4}" width="${bwid}" height="${Y0-Y1+4}" rx="10" fill="var(--ours-soft)"/>`;
+        h+=`<path d="M${x},${Y0} V${y+r} q0,-${r} ${r},-${r} h${bw-2*r} q${r},0 ${r},${r} V${Y0} Z" fill="none" stroke="var(--ours)" stroke-width="7" opacity=".35" filter="url(#${svg.slice(1)}glow)"/>`; }
+      h+=`<path d="M${x},${Y0} V${y+r} q0,-${r} ${r},-${r} h${bw-2*r} q${r},0 ${r},${r} V${Y0} Z" fill="${s.color}"${mk?' stroke="var(--ours)" stroke-width="2.5"':''}><title>${s.name} · ${c}: ${fmt(v)}${unit}${s.mem?` · ${s.mem[i].toFixed(2)} GB`:''}${s.note?.[i]?' ('+s.note[i]+')':''}</title></path>`;
+      if(mk){ const tw=62, ty=Math.max(Y1-2, y-40);
+        h+=`<rect x="${x+bw/2-tw/2}" y="${ty}" width="${tw}" height="17" rx="8.5" fill="var(--ours)"/><text x="${x+bw/2}" y="${ty+12.5}" text-anchor="middle" style="font:700 10.5px var(--sans);fill:#fff">≥ 25 FPS</text>`; }
+      h+=`<text class="v" x="${x+bw/2}" y="${y-6}" text-anchor="middle">${s.note?.[i]?'~':''}${fmt(v)}</text>`; });
+    h+=`<text class="cat" x="${cx}" y="${Y0+19}" text-anchor="middle">${c}</text>`;
+    if(notes&&notes[i]) h+=`<text class="up" x="${cx}" y="${Y0+36}" text-anchor="middle">${notes[i]}</text>`; });
+  if(opt.ref){ const y=ys(opt.ref); h+=`<line x1="${X0}" x2="${X1}" y1="${y}" y2="${y}" stroke="${opt.refColor||'var(--c-ec)'}" stroke-width="1.2" stroke-dasharray="5 4" opacity=".7"/><text class="ref"${opt.refColor?` style="fill:${opt.refColor}"`:''} x="${X0-7}" y="${y+4}" text-anchor="end">${opt.refLabel}</text>`; }
+  h+=`<line x1="${X0}" x2="${X1}" y1="${Y0}" y2="${Y0}" stroke="var(--muted)"/>`;
+  document.querySelector(svg).innerHTML=h;
+}
+{ const S=SPEED;
+  // A800, both without compile (paper Table 2); 4K MatAnyone 2 is extrapolated because it runs out of memory
+  const est=[null,null,null,'MatAnyone 2 estimated at 4K'];
+  bars('#c1', S.cats, [{name:'Speed-up',color:'var(--c-ec)',vals:[1.40,1.96,2.95,7.36],note:est},{name:'Memory saving',color:'var(--c-e)',vals:[1.74,3.30,5.33,13.11],note:est}], null,
+       {y0:430, ylab:'× vs MatAnyone 2 (A800)', fmt:v=>'×'+v.toFixed(2), unit:'', ref:1, refLabel:'1×', refColor:'var(--faint)'});
+  const G=SPEED.gpu;
+  bars('#c3090', SPEED.cats, [{name:'MatAnyone-E (C.)',color:'var(--c-ec)',vals:G.rtx.comp,mem:G.rtx.mem_comp}], null, {y0:170, ref:25, refLabel:'25', mark:[[0,1]]});
+  bars('#ch200', SPEED.cats, [{name:'MatAnyone-E (C.)',color:'var(--c-ec)',vals:G.h200.comp,mem:G.h200.mem_comp}], null, {y0:170, ref:25, refLabel:'25', mark:[[0,3]]});
+}
+
+{ const dd=document.getElementById('dd'), b=dd.querySelector('.ddbtn');
+  b.addEventListener('click',e=>{ e.stopPropagation(); const o=dd.classList.toggle('open'); b.setAttribute('aria-expanded',o); });
+  document.addEventListener('click',e=>{ if(!dd.contains(e.target)){ dd.classList.remove('open'); b.setAttribute('aria-expanded','false'); } });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ dd.classList.remove('open'); b.setAttribute('aria-expanded','false'); } }); }
+</script>
+</body>
+</html>
