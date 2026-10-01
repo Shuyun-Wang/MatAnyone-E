@@ -200,7 +200,7 @@ footer{padding-block:56px 56px;color:var(--faint);font-size:13px;text-align:cent
   <div style="height:26px"></div>
   <div class="card">
    <div class="stagebox"><div class="stage" id="g"><video class="src" muted playsinline loop preload="auto"></video><canvas></canvas><div class="cmpline"><span class="knob"></span></div><span class="tag l"></span><span class="tag r"></span></div></div>
-   <div class="row"><div class="seg" id="vs"><button type="button" data-m="cmp" aria-pressed="true">Input | Matte</button><button type="button" data-m="0">Input</button><button type="button" data-m="1">Green screen</button><button type="button" data-m="2">Alpha</button></div><div class="rside"><span class="meta" id="gm"></span><a class="native" id="native" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5.1v13.8c0 .8.9 1.3 1.6.8l10.4-6.9c.6-.4.6-1.3 0-1.7L9.6 4.3C8.9 3.8 8 4.3 8 5.1Z"/></svg><span id="nativetxt">View native 4K</span></a></div></div>
+   <div class="row"><div class="seg" id="vs"><button type="button" data-m="cmp" aria-pressed="true">Input | Matte</button><button type="button" data-m="0">Input</button><button type="button" data-m="1">Green screen</button><button type="button" data-m="2">Alpha</button></div><div class="rside"><span class="meta" id="gm"></span><a class="native" id="native" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5.1v13.8c0 .8.9 1.3 1.6.8l10.4-6.9c.6-.4.6-1.3 0-1.7L9.6 4.3C8.9 3.8 8 4.3 8 5.1Z"/></svg><span id="nativetxt">View native 4K</span></a></div></div>
    <div class="pills" id="pills"></div>
   </div>
  </section>
@@ -252,10 +252,10 @@ footer{padding-block:56px 56px;color:var(--faint);font-size:13px;text-align:cent
 <script src="gate/data.js"></script>
 <script>
 const CLIPS=[
- {id:'14629559_2560_1440_30fps',title:'Long hair',w:2560,h:1440,fps:29.97,frames:370,credit:'Stock footage',native:''},
- {id:'7566339-uhd_3840_2160_25fps',title:'Beach walk',w:3840,h:2160,fps:25,frames:268,credit:'Pexels',native:''},
- {id:'331079_medium_revrun',title:'AI-generated',w:1440,h:2144,fps:25,frames:127,credit:'Pixabay',native:''},
- {id:'pexels_4065468',title:'Moving camera',w:3840,h:2160,fps:29.97,frames:425,credit:'Pavel Danilyuk / Pexels',native:''}];
+ {id:'14629559_2560_1440_30fps',title:'Long hair',w:2560,h:1440,fps:29.97,frames:370,credit:'Stock footage',native:'native/long_hair_2560x1440.mp4'},
+ {id:'7566339-uhd_3840_2160_25fps',title:'Beach walk',w:3840,h:2160,fps:25,frames:268,credit:'Pexels',native:'native/beach_walk_3840x2160.mp4'},
+ {id:'331079_medium_revrun',title:'AI-generated',w:1440,h:2144,fps:25,frames:127,credit:'Pixabay',native:'native/ai_portrait_1440x2144.mp4'},
+ {id:'pexels_4065468',title:'Moving camera',w:3840,h:2160,fps:29.97,frames:425,credit:'Pavel Danilyuk / Pexels',native:'native/moving_camera_3840x2160.mp4'}];
 const $=s=>document.querySelector(s);
 const VN=['Input','Green screen','Alpha'];
 
