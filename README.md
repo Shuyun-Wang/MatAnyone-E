@@ -2,9 +2,9 @@
 <div style="text-align: center;">
     <picture>
         <source media="(prefers-color-scheme: dark)" srcset="./assets/matanyone_e_logo_dark.png">
-        <img src="./assets/matanyone_e_logo.png" alt="MatAnyone-E Logo" width="560">
+        <img src="./assets/matanyone_e_logo.png" alt="MatAnyone-E Logo" width="433">
     </picture>
-    <h2>Sparse Memory Propagation for Efficient High-Resolution Video Matting</h2>
+    <h3>Sparse Memory Propagation for Efficient High-Resolution Video Matting</h3>
 </div>
 
 <div>
@@ -31,9 +31,9 @@
     <img src="https://api.infinitescript.com/badgen/count?name=Shuyun-Wang/MatAnyone-E&ltext=Visitors&color=3977dd">
 </h4>
 
-<strong>MatAnyone-E mattes native 4K video at 28.6 FPS on a single H200 (with torch.compile), 12× faster than MatAnyone 2, using 3.1 GB of GPU memory, while keeping fine details such as hair strands.</strong>
-
 <img width="100%" src="assets/teaser.jpg">
+
+<strong>MatAnyone-E mattes native 4K video at 28.6 FPS on a single H200 (with torch.compile), 12× faster than MatAnyone 2, using 3.1 GB of GPU memory, while keeping fine details such as hair strands.</strong>
 
 :movie_camera: More results on the <a href="https://shuyun-wang.github.io/projects/MatAnyone-E/" target="_blank">project page</a>.
 
