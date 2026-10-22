@@ -31,7 +31,7 @@
     <img src="https://api.infinitescript.com/badgen/count?name=Shuyun-Wang/MatAnyone-E&ltext=Visitors&color=3977dd">
 </h4>
 
-<img width="100%" src="assets/teaser.jpg">
+<img width="100%" src="assets/teaser.webp" alt="4K speed race: MatAnyone 2 at 2.3 FPS vs MatAnyone-E at 28.6 FPS on one H200">
 
 <strong>MatAnyone-E mattes native 4K video at 28.6 FPS on a single H200 (with torch.compile), 12× faster than MatAnyone 2, using 3.1 GB of GPU memory, while keeping fine details such as hair strands.</strong>
 
