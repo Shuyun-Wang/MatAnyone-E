@@ -4,7 +4,7 @@
         <source media="(prefers-color-scheme: dark)" srcset="./assets/matanyone_e_logo_dark.png">
         <img src="./assets/matanyone_e_logo.png" alt="MatAnyone-E Logo" width="433">
     </picture>
-    <h3>Sparse Memory Propagation for Efficient High-Resolution Video Matting</h3>
+    <h2>Sparse Memory Propagation for Efficient High-Resolution Video Matting</h2>
 </div>
 
 <div>
