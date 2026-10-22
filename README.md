@@ -47,6 +47,7 @@
 - [ ] Paper on arXiv
 - [ ] Inference code and checkpoints
 - [ ] Hugging Face demo
+- [ ] ComfyUI custom node
 
 ## 🔎 Overview
 ![overview](assets/overview.jpg)
