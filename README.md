@@ -1,6 +1,11 @@
 <div align="center">
-<h1>MatAnyone-E</h1>
-<h3>Sparse Memory Propagation for Efficient High-Resolution Video Matting</h3>
+<div style="text-align: center;">
+    <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="./assets/matanyone_e_logo_dark.png">
+        <img src="./assets/matanyone_e_logo.png" alt="MatAnyone-E Logo" width="560">
+    </picture>
+    <h2>Sparse Memory Propagation for Efficient High-Resolution Video Matting</h2>
+</div>
 
 <div>
     Shuyun Wang<sup>1,2</sup>&emsp;
@@ -71,4 +76,6 @@ This project is licensed under <a rel="license" href="./LICENSE">NTU S-Lab Licen
 ## 👏 Acknowledgement
 This project is built upon [MatAnyone 2](https://github.com/pq-yang/MatAnyone2) and [MatAnyone](https://github.com/pq-yang/MatAnyone). Thanks for their awesome works!
 
----
+## 📧 Contact
+
+If you have any questions, please feel free to reach us at `shuyun.wang@uq.edu.au`.
