@@ -8,7 +8,7 @@
 </div>
 
 <div>
-    Shuyun Wang<sup>1,2</sup>&emsp;
+    <a href='https://shuyun-wang.github.io/' target='_blank'>Shuyun Wang</a><sup>2†</sup>&emsp;
     <a href='https://shangchenzhou.com/' target='_blank'>Shangchen Zhou</a><sup>2†</sup>&emsp;
     <a href='https://pq-yang.github.io/' target='_blank'>Peiqing Yang</a><sup>2</sup>&emsp;
     <a href='https://ykdai.github.io/' target='_blank'>Yuekun Dai</a><sup>2</sup>&emsp;
