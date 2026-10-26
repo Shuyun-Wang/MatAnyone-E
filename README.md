@@ -28,7 +28,7 @@
     <img src="https://img.shields.io/badge/arXiv-coming%20soon-b31b1b.svg">
     <a href="https://shuyun-wang.github.io/projects/MatAnyone-E/#demo" target='_blank'><img src="https://img.shields.io/badge/Demo%20Video-%23FF0000.svg?logo=YouTube&logoColor=white"></a>
     <img src="https://img.shields.io/badge/Demo-%F0%9F%A4%97%20Hugging%20Face%20(coming%20soon)-blue">
-    <img src="https://api.infinitescript.com/badgen/count?name=Shuyun-Wang/MatAnyone-E&ltext=Visitors&color=3977dd">
+    <img src="https://visitor-badge.laobi.icu/badge?page_id=Shuyun-Wang.MatAnyone-E&left_text=Visitors&left_color=%23555555&right_color=%233977dd">
 </h4>
 
 <img width="100%" src="assets/teaser.webp" alt="4K speed race: MatAnyone 2 at 2.3 FPS vs MatAnyone-E at 28.6 FPS on one H200">
