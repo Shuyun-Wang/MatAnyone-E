@@ -69,7 +69,16 @@ FPS and peak GPU memory on one NVIDIA A800-SXM4-80GB (fp16); (C.) = with `torch.
 ~ extrapolated (a full memory bank does not fit in 80 GB). On one H200 with `torch.compile`: 73.07 FPS at 1080p, 28.62 FPS at 4K.
 
 ## 📑 Citation
-Coming soon.
+If you find our repo useful for your research, please consider citing our paper:
+
+```bibtex
+@article{wang2026matanyonee,
+  title   = {{MatAnyone-E}: Sparse Memory Propagation for Efficient High-Resolution Video Matting},
+  author  = {Shuyun Wang and Shangchen Zhou and Peiqing Yang and Yuekun Dai and Xin Yu and Chen Change Loy},
+  journal = {arXiv preprint arXiv:2610.35724},
+  year    = {2026}
+}
+```
 
 ## 📝 License
 This project is licensed under <a rel="license" href="./LICENSE">NTU S-Lab License 1.0</a>. Redistribution and use should follow this license.
